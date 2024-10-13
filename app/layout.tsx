@@ -16,9 +16,9 @@ const geistMono = localFont({
 
 let title = "SnapFrame – Lightning-Fast AI Imagery";
 let description = "Generate images with AI in a milliseconds";
-let url = "https://www..io/";
+let url = "https://sanp-frame.vercel.app/";
 let ogimage = "https://github.com/cyber-bytezz/videodubber-ai/blob/main/export.png?raw=true";
-let sitename = ".io";
+let sitename = "sanp-frame.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(url),
@@ -53,7 +53,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <head>
         <meta name="color-scheme" content="dark" />
-        <PlausibleProvider domain=".io" />
+        <PlausibleProvider domain="sanp-frame.vercel.app" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} dark h-full min-h-full bg-[length:6px] font-mono text-gray-100 antialiased`}
