@@ -24,9 +24,10 @@ export default function Home() {
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
   const debouncedPrompt = useDebounce(prompt, 300);
-  const [generations, setGenerations] = useState<
-    { prompt: string; image: ImageResponse }[]
-  >([]);
+  const [generations, setGenerations] = useState<{
+    prompt: string;
+    image: ImageResponse;
+  }[]>([]);
   let [activeIndex, setActiveIndex] = useState<number>();
 
   const { data: image, isFetching } = useQuery({
@@ -73,6 +74,10 @@ export default function Home() {
     "/6.png",
     "/7.png",
     "/8.png",
+    "/1.png",
+    "/2.png",
+    "/3.png",
+    "/4.png",
     // Add more image paths as needed
   ];
 
@@ -81,11 +86,15 @@ export default function Home() {
       <header className="flex justify-center pt-20 md:justify-end md:pt-3">
         <div className="absolute left-1/2 top-6 -translate-x-1/2">
           <a href="https://www.dub.sh/together-ai" target="_blank">
-            <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
+            <Logo
+              iconSrc="https://github.com/shadcn.png"
+              brandName="SnapFrame"
+            />
           </a>
         </div>
         <div>
-          <label className="text-xs text-gray-200">[Optional] Add your{" "}
+          <label className="text-xs text-gray-200">
+            [Optional] Add your{" "}
             <a
               href="https://api.together.xyz/settings/api-keys"
               target="_blank"
@@ -103,7 +112,7 @@ export default function Home() {
           />
         </div>
       </header>
-  
+
       {/* Content Area */}
       <div className="flex justify-center">
         <form className="mt-10 w-full max-w-lg">
@@ -118,15 +127,20 @@ export default function Home() {
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
               />
-              <div className={`${
-                isFetching || isDebouncing ? "flex" : "hidden"
-              } absolute bottom-3 right-3 items-center justify-center`}>
+              <div
+                className={`${
+                  isFetching || isDebouncing ? "flex" : "hidden"
+                } absolute bottom-3 right-3 items-center justify-center`}
+              >
                 <Spinner className="size-4" />
               </div>
             </div>
-  
+
             <div className="mt-3 text-sm md:text-right">
-              <label title="Use earlier images as references" className="inline-flex items-center gap-2">
+              <label
+                title="Use earlier images as references"
+                className="inline-flex items-center gap-2"
+              >
                 Consistency mode
                 <Switch
                   checked={iterativeMode}
@@ -137,7 +151,7 @@ export default function Home() {
           </fieldset>
         </form>
       </div>
-  
+
       {/* Active Image or Prompt Section */}
       <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
         {/* Conditional Rendering of Active Image */}
@@ -167,7 +181,7 @@ export default function Home() {
                 } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
             </div>
-  
+
             {/* Generations Gallery */}
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
               {generations.map((generatedImage, i) => (
@@ -191,71 +205,47 @@ export default function Home() {
           </div>
         )}
       </div>
-  
-      {/* Horizontal Image Gallery from the Public Folder */}
+
+      {/* Automatically Scroll Horizontal Gallery Below */}
       <div className="overflow-hidden">
-        <div className="flex gap-4 overflow-x-scroll pb-4 animate-scroll">
+        <div className="flex gap-4 animate-scroll whitespace-nowrap">
           {imagesFromPublic.map((imageSrc, index) => (
-            <div key={index} className="flex-shrink-0 w-32">
+            <div key={index} className="flex-shrink-0 w-32 md:w-48 lg:w-64">
               <Image
                 src={imageSrc}
                 alt={`Gallery Image ${index + 1}`}
-                width={1024}
-                height={768}
+                width={400}  // Set width for the images
+                height={300} // Set height for the images
                 className="max-w-full rounded-lg object-cover shadow-sm shadow-black"
               />
             </div>
           ))}
         </div>
       </div>
-  
+
       {/* Footer Section */}
       <footer className="mt-16 w-full items-center pb-10 text-center text-gray-300 md:mt-4 md:flex md:justify-between md:pb-5 md:text-xs lg:text-sm">
         <p>
           Powered by{" "}
           <a
-            href="https://www.dub.sh/together-ai"
+            href="https://hyper-flux.vercel.app/"
             target="_blank"
             className="underline underline-offset-4 transition hover:text-blue-500"
           >
-            Together.ai
+            HyperFlux.ai
           </a>{" "}
-          &{" "}
-          <a
-            href="https://dub.sh/together-flux"
-            target="_blank"
-            className="underline underline-offset-4 transition hover:text-blue-500"
-          >
-            Flux
-          </a>
         </p>
-  
-        <div className="mt-8 flex items-center justify-center md:mt-0 md:justify-between md:gap-6">
-          <div className="flex gap-6 md:gap-2">
-            <a href="https://github.com/cyber-bytezz" target="_blank">
-              <Button
-                variant="outline"
-                size="sm"
-                className="inline-flex items-center gap-2"
-              >
-                <GithubIcon className="size-4" />
-                GitHub
-              </Button>
-            </a>
-            <a href="https://www.linkedin.com/in/-aro-barath-chandru--12725622a/?originalSubdomain=in" target="_blank">
-              <Button
-                size="sm"
-                variant="outline"
-                className="inline-flex items-center gap-2"
-              >
-                <XIcon className="size-3" />
-                LinkedIn
-              </Button>
-            </a>
-          </div>
+
+        <div className="mt-8 flex items-center justify-center md:mt-0 md:justify-between md:gap-6 lg:gap-12">
+          <Button variant="link" size="sm" className="px-0">
+            <GithubIcon className="mr-2 h-4 w-4" />
+            GitHub
+          </Button>
+          <a href="#" className="text-gray-300">
+            Contact
+          </a>
         </div>
       </footer>
     </div>
   );
-  
 }

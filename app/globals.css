@@ -76,16 +76,15 @@
 
 /* styles.css or in a styled component */
 .animate-scroll {
-  display: flex;
-  overflow: hidden;
-  animation: scroll 20s linear infinite;
+  animation: scroll 10s linear infinite;
 }
 
 @keyframes scroll {
-  0% {
+  from {
     transform: translateX(0);
   }
-  100% {
+  to {
     transform: translateX(-100%);
   }
 }
+
