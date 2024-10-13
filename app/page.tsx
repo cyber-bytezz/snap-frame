@@ -1,7 +1,6 @@
 "use client";
 
 import GithubIcon from "@/components/icons/github-icon";
-import XIcon from "@/components/icons/x-icon";
 import Logo from "@/components/logo";
 import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import imagePlaceholder from "@/public/image-placeholder.png";
+import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import Image from "next/image";
@@ -128,9 +128,8 @@ export default function Home() {
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
               />
               <div
-                className={`${
-                  isFetching || isDebouncing ? "flex" : "hidden"
-                } absolute bottom-3 right-3 items-center justify-center`}
+                className={`${isFetching || isDebouncing ? "flex" : "hidden"
+                  } absolute bottom-3 right-3 items-center justify-center`}
               >
                 <Spinner className="size-4" />
               </div>
@@ -176,9 +175,8 @@ export default function Home() {
                 height={768}
                 src={`data:image/png;base64,${activeImage.b64_json}`}
                 alt=""
-                className={`${
-                  isFetching ? "animate-pulse" : ""
-                } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
+                className={`${isFetching ? "animate-pulse" : ""
+                  } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
             </div>
 
@@ -228,7 +226,7 @@ export default function Home() {
         <p>
           Powered by{" "}
           <a
-            href="https://hyper-flux.vercel.app/"
+            href="hyper-flux.vercel.app"
             target="_blank"
             className="underline underline-offset-4 transition hover:text-blue-500"
           >
@@ -236,14 +234,31 @@ export default function Home() {
           </a>{" "}
         </p>
 
-        <div className="mt-8 flex items-center justify-center md:mt-0 md:justify-between md:gap-6 lg:gap-12">
-          <Button variant="link" size="sm" className="px-0">
-            <GithubIcon className="mr-2 h-4 w-4" />
-            GitHub
-          </Button>
-          <a href="#" className="text-gray-300">
-            Contact
-          </a>
+        <div className="mt-8 flex items-center justify-center md:mt-0 md:justify-between md:gap-6">
+
+
+          <div className="flex gap-6 md:gap-2">
+            <a href="https://github.com/cyber-bytezz" target="_blank">
+              <Button
+                variant="outline"
+                size="sm"
+                className="inline-flex items-center gap-2"
+              >
+                <GithubIcon className="size-4" />
+                GitHub
+              </Button>
+            </a>
+            <a href="https://www.linkedin.com/in/-aro-barath-chandru--12725622a/?originalSubdomain=in" target="_blank">
+              <Button
+                size="sm"
+                variant="outline"
+                className="inline-flex items-center gap-2"
+              >
+                <LinkedInLogoIcon className="size-3" />
+                LinkedIn
+              </Button>
+            </a>
+          </div>
         </div>
       </footer>
     </div>
