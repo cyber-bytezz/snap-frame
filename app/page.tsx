@@ -63,24 +63,36 @@ export default function Home() {
   let activeImage =
     activeIndex !== undefined ? generations[activeIndex].image : undefined;
 
+  // Array of image paths from the public folder
+  const imagesFromPublic = [
+    "/1.png",
+    "/2.png",
+    "/3.png",
+    "/4.png",
+    "/5.png",
+    "/6.png",
+    "/7.png",
+    "/8.png",
+    // Add more image paths as needed
+  ];
+
   return (
     <div className="flex h-full flex-col px-5">
       <header className="flex justify-center pt-20 md:justify-end md:pt-3">
         <div className="absolute left-1/2 top-6 -translate-x-1/2">
           <a href="https://www.dub.sh/together-ai" target="_blank">
-          <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
+            <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
           </a>
         </div>
         <div>
-          <label className="text-xs text-gray-200">
-            [Optional] Add your{" "}
+          <label className="text-xs text-gray-200">[Optional] Add your{" "}
             <a
               href="https://api.together.xyz/settings/api-keys"
               target="_blank"
               className="underline underline-offset-4 transition hover:text-blue-500"
             >
               Together API Key
-            </a>{" "}
+            </a>
           </label>
           <Input
             placeholder="API Key"
@@ -91,7 +103,8 @@ export default function Home() {
           />
         </div>
       </header>
-
+  
+      {/* Content Area */}
       <div className="flex justify-center">
         <form className="mt-10 w-full max-w-lg">
           <fieldset>
@@ -105,18 +118,15 @@ export default function Home() {
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
               />
-              <div
-                className={`${isFetching || isDebouncing ? "flex" : "hidden"} absolute bottom-3 right-3 items-center justify-center`}
-              >
+              <div className={`${
+                isFetching || isDebouncing ? "flex" : "hidden"
+              } absolute bottom-3 right-3 items-center justify-center`}>
                 <Spinner className="size-4" />
               </div>
             </div>
-
+  
             <div className="mt-3 text-sm md:text-right">
-              <label
-                title="Use earlier images as references"
-                className="inline-flex items-center gap-2"
-              >
+              <label title="Use earlier images as references" className="inline-flex items-center gap-2">
                 Consistency mode
                 <Switch
                   checked={iterativeMode}
@@ -127,8 +137,10 @@ export default function Home() {
           </fieldset>
         </form>
       </div>
-
+  
+      {/* Active Image or Prompt Section */}
       <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
+        {/* Conditional Rendering of Active Image */}
         {!activeImage || !prompt ? (
           <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
             <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
@@ -141,6 +153,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
+            {/* Active Image Display */}
             <div>
               <Image
                 placeholder="blur"
@@ -149,10 +162,13 @@ export default function Home() {
                 height={768}
                 src={`data:image/png;base64,${activeImage.b64_json}`}
                 alt=""
-                className={`${isFetching ? "animate-pulse" : ""} max-w-full rounded-lg object-cover shadow-sm shadow-black`}
+                className={`${
+                  isFetching ? "animate-pulse" : ""
+                } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
             </div>
-
+  
+            {/* Generations Gallery */}
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
               {generations.map((generatedImage, i) => (
                 <button
@@ -175,7 +191,25 @@ export default function Home() {
           </div>
         )}
       </div>
-
+  
+      {/* Horizontal Image Gallery from the Public Folder */}
+      <div className="overflow-hidden">
+        <div className="flex gap-4 overflow-x-scroll pb-4 animate-scroll">
+          {imagesFromPublic.map((imageSrc, index) => (
+            <div key={index} className="flex-shrink-0 w-32">
+              <Image
+                src={imageSrc}
+                alt={`Gallery Image ${index + 1}`}
+                width={1024}
+                height={768}
+                className="max-w-full rounded-lg object-cover shadow-sm shadow-black"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+  
+      {/* Footer Section */}
       <footer className="mt-16 w-full items-center pb-10 text-center text-gray-300 md:mt-4 md:flex md:justify-between md:pb-5 md:text-xs lg:text-sm">
         <p>
           Powered by{" "}
@@ -195,9 +229,8 @@ export default function Home() {
             Flux
           </a>
         </p>
-
+  
         <div className="mt-8 flex items-center justify-center md:mt-0 md:justify-between md:gap-6">
-
           <div className="flex gap-6 md:gap-2">
             <a href="https://github.com/cyber-bytezz" target="_blank">
               <Button
@@ -224,4 +257,5 @@ export default function Home() {
       </footer>
     </div>
   );
+  
 }
