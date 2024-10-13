@@ -226,7 +226,7 @@ export default function Home() {
         <p>
           Powered by{" "}
           <a
-            href="hyper-flux.vercel.app"
+            href="https://hyper-flux.vercel.app"
             target="_blank"
             className="underline underline-offset-4 transition hover:text-blue-500"
           >
