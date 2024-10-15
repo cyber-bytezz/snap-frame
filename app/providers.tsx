@@ -1,5 +1,6 @@
 "use client";
 
+import Provider from "@/components/Provider";
 import {
   QueryCache,
   QueryClient,
@@ -19,8 +20,10 @@ const queryClient = new QueryClient({
 export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
+      <Provider >
       {children}
       <Toaster />
+    </Provider> 
     </QueryClientProvider>
   );
 }
