@@ -5,8 +5,6 @@ import Logo from "@/components/logo";
 import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Sidebar from "@/components/ui/sidebar";
-
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import imagePlaceholder from "@/public/image-placeholder.png";
@@ -16,6 +14,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react"; // Import these from NextAuth
+
 
 type ImageResponse = {
   b64_json: string;
@@ -68,6 +67,14 @@ export default function Home() {
   let activeImage =
     activeIndex !== undefined ? generations[activeIndex].image : undefined;
 
+    const downloadImage = (base64Image :string, index: number | undefined) => {
+      const link = document.createElement("a");
+      link.href = base64Image;
+      link.download = `generated_image_${index}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
   const imagesFromPublic = [
     "/1.png",
     "/2.png",
@@ -80,12 +87,7 @@ export default function Home() {
   ];
 
   return (<div className="h-full w-full flex flex-row ">
-   <div className="w-64 h-full md:w-48 lg:w-64">
-        <Sidebar
-          generations={generations} // Pass generations data as props
-          setActiveIndex={setActiveIndex} // Pass the function to handle prompt clicks
-        />
-      </div>
+  
     <div className="flex-1 flex flex-col px-5 overflow-auto">
     
       <header className="flex justify-center pt-20 md:justify-end md:pt-3">
@@ -175,7 +177,7 @@ export default function Home() {
         {/* Conditional Rendering of Active Image */}
         {!activeImage || !prompt ? (
           <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
-            <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
+            <p className="text-xl fo nt-semibold text-gray-200 md:text-3xl lg:text-4xl">
               Generate Stunning Images Instantly!
             </p>
             <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
@@ -186,6 +188,9 @@ export default function Home() {
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
             {/* Active Image Display */}
             <div>
+            <button onClick={() =>
+              downloadImage(
+                `data:image/png;base64,${activeImage.b64_json}`, activeIndex)}>
               <Image
                 placeholder="blur"
                 blurDataURL={imagePlaceholder.blurDataURL}
@@ -196,6 +201,7 @@ export default function Home() {
                 className={`${isFetching ? "animate-pulse" : ""
                   } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
+            </button>
             </div>
             
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
@@ -217,7 +223,8 @@ export default function Home() {
                     className="max-w-full rounded-lg object-cover shadow-sm shadow-black"
                   />
                 </button>
-              ))}
+
+              ))} 
             </div>
           </div>
         )}
