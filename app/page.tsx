@@ -11,6 +11,7 @@ import imagePlaceholder from "@/public/image-placeholder.png";
 import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
+import { stat } from "fs";
 import { useSession,signIn,signOut } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -147,12 +148,12 @@ export default function Home() {
               <Textarea
                 rows={4}
                 spellCheck={false}
-                placeholder="Describe your image..."
+                placeholder={status === "authenticated" ? `Describe your image...` : `Sign in to generate images...`}
                 required
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
-               
+               disabled={status !== "authenticated"}
               />
             
               <div
