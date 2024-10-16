@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react"; // Import these from NextAuth
 
 type ImageResponse = {
   b64_json: string;
@@ -22,6 +23,7 @@ type ImageResponse = {
 };
 
 export default function Home() {
+  const { data: session, status } = useSession(); // Use session hook
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
@@ -66,7 +68,6 @@ export default function Home() {
   let activeImage =
     activeIndex !== undefined ? generations[activeIndex].image : undefined;
 
-  // Array of image paths from the public folder
   const imagesFromPublic = [
     "/1.png",
     "/2.png",
@@ -76,11 +77,6 @@ export default function Home() {
     "/6.png",
     "/7.png",
     "/8.png",
-    "/1.png",
-    "/2.png",
-    "/3.png",
-    "/4.png",
-    // Add more image paths as needed
   ];
 
   return (<div className="h-full w-full flex flex-row ">
@@ -95,12 +91,24 @@ export default function Home() {
       <header className="flex justify-center pt-20 md:justify-end md:pt-3">
         <div className="absolute left-1/2 top-6 -translate-x-1/2">
           <a href="https://www.dub.sh/together-ai" target="_blank">
-            <Logo
-              iconSrc="https://github.com/shadcn.png"
-              brandName="SnapFrame"
-            />
+            <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
           </a>
         </div>
+        
+        {/* Display sign-in and sign-out buttons conditionally based on session status */}
+        <div>
+          {status === "loading" ? (
+            <p>Loading...</p>
+          ) : session ? (
+            <div className="flex gap-4">
+              <p className="text-gray-200">Welcome, {session.user?.name}!</p>
+              <Button onClick={() => signOut()}>Sign Out</Button>
+            </div>
+          ) : (
+            <Button onClick={() => signIn("google")}>Sign In with Google</Button>
+          )}
+        </div>
+
         <div>
           <label className="text-xs text-gray-200">
             [Optional] Add your{" "}
@@ -135,7 +143,9 @@ export default function Home() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
+               
               />
+            
               <div
                 className={`${isFetching || isDebouncing ? "flex" : "hidden"
                   } absolute bottom-3 right-3 items-center justify-center`}
@@ -166,11 +176,10 @@ export default function Home() {
         {!activeImage || !prompt ? (
           <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
             <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
-              Generate images in real-time
+              Generate Stunning Images Instantly!
             </p>
             <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
               Enter a prompt and generate images in milliseconds as you type.
-              Powered by Flux on Together AI.
             </p>
           </div>
         ) : (
@@ -188,15 +197,16 @@ export default function Home() {
                   } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
             </div>
-
-            {/* Generations Gallery */}
+            
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
+              
               {generations.map((generatedImage, i) => (
                 <button
                   key={i}
                   className="w-32 shrink-0 opacity-50 hover:opacity-100"
                   onClick={() => setActiveIndex(i)}
                 >
+                  
                   <Image
                     placeholder="blur"
                     blurDataURL={imagePlaceholder.blurDataURL}
