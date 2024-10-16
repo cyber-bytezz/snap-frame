@@ -21,7 +21,7 @@ type ImageResponse = {
 };
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();  // Removed 'session' to avoid the unused variable error
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
