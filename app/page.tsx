@@ -61,8 +61,9 @@ export default function Home() {
     }
   }, [generations, image, prompt]);
 
-  let activeImage =
-    activeIndex !== undefined ? generations[activeIndex].image : undefined;
+
+  let activeImage = 
+    activeIndex !== undefined ? generations[activeIndex].image : undefined
 
   // Array of image paths from the public folder
   const imagesFromPublic = [
@@ -74,10 +75,6 @@ export default function Home() {
     "/6.png",
     "/7.png",
     "/8.png",
-    "/1.png",
-    "/2.png",
-    "/3.png",
-    "/4.png",
     // Add more image paths as needed
   ];
 
@@ -111,6 +108,7 @@ export default function Home() {
             onChange={(e) => setUserAPIKey(e.target.value)}
           />
         </div>
+        
       </header>
 
       {/* Content Area */}
@@ -159,11 +157,10 @@ export default function Home() {
         {!activeImage || !prompt ? (
           <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
             <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
-              Generate images in real-time
+              Generate Stunning Images Instantly!
             </p>
             <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
               Enter a prompt and generate images in milliseconds as you type.
-              Powered by Flux on Together AI.
             </p>
           </div>
         ) : (
@@ -181,15 +178,16 @@ export default function Home() {
                   } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
             </div>
-
-            {/* Generations Gallery */}
+            
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
+              
               {generations.map((generatedImage, i) => (
                 <button
                   key={i}
                   className="w-32 shrink-0 opacity-50 hover:opacity-100"
                   onClick={() => setActiveIndex(i)}
                 >
+                  
                   <Image
                     placeholder="blur"
                     blurDataURL={imagePlaceholder.blurDataURL}
