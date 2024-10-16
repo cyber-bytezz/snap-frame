@@ -24,8 +24,8 @@ const styles = {
     alignItems: 'center',
   },
   logoIconContainer: {
-    width: '50px', // Decreased size of the circular container
-    height: '50px',
+    width: '60px', // Decreased size of the circular container
+    height: '60px',
     borderRadius: '50%', // Keeps the container circular
     overflow: 'hidden', // Ensures the image fits within the circle
     display: 'flex',
@@ -39,7 +39,7 @@ const styles = {
     objectFit: 'cover', // Ensures the image covers the circle without distortion
   },
   brandName: {
-    fontSize: '18px', // Decreased font size for brand name
+    fontSize: '24px', // Decreased font size for brand name
     fontWeight: 'bold', // Makes brand name bold
     marginLeft: '10px', // Space between icon and brand name
   },

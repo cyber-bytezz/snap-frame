@@ -11,8 +11,7 @@ import imagePlaceholder from "@/public/image-placeholder.png";
 import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
-import { stat } from "fs";
-import { useSession,signIn,signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -22,7 +21,7 @@ type ImageResponse = {
 };
 
 export default function Home() {
-  const {data:session,status} = useSession();
+  const { data: session, status } = useSession();
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
@@ -87,57 +86,55 @@ export default function Home() {
   return (
     <div className="flex h-full flex-col px-5">
       <header className="flex flex-col-reverse lg:flex-row lg:gap-12 py-4 gap-4">
-      <div className="md:w-2/3">
-      <div className=" w-full md:max-w-80">
-          <label className="text-xs text-gray-200">
-            [Optional] Add your{" "}
-            <a
-              href="https://api.together.xyz/settings/api-keys"
-              target="_blank"
-              className="underline underline-offset-4 transition hover:text-blue-500"
-            >
-              Together API Key
-            </a>
-          </label>
-          <Input
-            placeholder="API Key"
-            type="password"
-            value={userAPIKey}
-            className="mt-1 bg-gray-400 text-gray-200 placeholder:text-gray-300"
-            onChange={(e) => setUserAPIKey(e.target.value)}
-          />
-        </div>
+        <div className="md:w-2/3">
+          <div className="w-full md:max-w-80">
+            <label className="text-xs text-gray-200">
+              [Optional] Add your{" "}
+              <a
+                href="https://api.together.xyz/settings/api-keys"
+                target="_blank"
+                className="underline underline-offset-4 transition hover:text-blue-500"
+              >
+                Together API Key
+              </a>
+            </label>
+            <Input
+              placeholder="API Key"
+              type="password"
+              value={userAPIKey}
+              className="mt-1 bg-gray-400 text-gray-200 placeholder:text-gray-300"
+              onChange={(e) => setUserAPIKey(e.target.value)}
+            />
+          </div>
         </div>
         <div className="flex items-start justify-between lg:w-full pt-2">
           <div className="">
-          <a href="https://www.dub.sh/together-ai" target="_blank">
-            <Logo
-              iconSrc="https://github.com/shadcn.png"
-              brandName="SnapFrame"
-            />
-          </a>
+            <a href="https://www.dub.sh/together-ai" target="_blank">
+              <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
+            </a>
           </div>
           <div className="">
-            {
-              status === "authenticated" ? (
-                <Button
+            {status === "authenticated" ? (
+              <Button
                 size="lg"
                 variant="outline"
                 className="inline-flex items-center gap-2"
                 onClick={() => signOut()}
-              >Sign out</Button>
-              ) : (
-                <Button
+              >
+                Sign out
+              </Button>
+            ) : (
+              <Button
                 size="lg"
                 variant="outline"
                 className="inline-flex items-center gap-2"
                 onClick={() => signIn("google")}
-              >Sign In</Button>
-              )
-            }
+              >
+                Sign In
+              </Button>
+            )}
           </div>
         </div>
-        
       </header>
 
       {/* Content Area */}
@@ -148,17 +145,21 @@ export default function Home() {
               <Textarea
                 rows={4}
                 spellCheck={false}
-                placeholder={status === "authenticated" ? `Describe your image...` : `Sign in to generate images...`}
+                placeholder={
+                  status === "authenticated"
+                    ? `Describe your image...`
+                    : `Sign in to generate images...`
+                }
                 required
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
-               disabled={status !== "authenticated"}
+                disabled={status !== "authenticated"}
               />
-            
               <div
-                className={`${isFetching || isDebouncing ? "flex" : "hidden"
-                  } absolute bottom-3 right-3 items-center justify-center`}
+                className={`${
+                  isFetching || isDebouncing ? "flex" : "hidden"
+                } absolute bottom-3 right-3 items-center justify-center`}
               >
                 <Spinner className="size-4" />
               </div>
@@ -204,8 +205,9 @@ export default function Home() {
                 height={768}
                 src={`data:image/png;base64,${activeImage.b64_json}`}
                 alt=""
-                className={`${isFetching ? "animate-pulse" : ""
-                  } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
+                className={`${
+                  isFetching ? "animate-pulse" : ""
+                } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
             </div>
 
@@ -241,7 +243,7 @@ export default function Home() {
               <Image
                 src={imageSrc}
                 alt={`Gallery Image ${index + 1}`}
-                width={400}  // Set width for the images
+                width={400} // Set width for the images
                 height={300} // Set height for the images
                 className="max-w-full rounded-lg object-cover shadow-sm shadow-black"
               />
@@ -264,8 +266,6 @@ export default function Home() {
         </p>
 
         <div className="mt-8 flex items-center justify-center md:mt-0 md:justify-between md:gap-6">
-
-
           <div className="flex gap-6 md:gap-2">
             <a href="https://github.com/cyber-bytezz" target="_blank">
               <Button
@@ -277,7 +277,10 @@ export default function Home() {
                 GitHub
               </Button>
             </a>
-            <a href="https://www.linkedin.com/in/-aro-barath-chandru--12725622a/?originalSubdomain=in" target="_blank">
+            <a
+              href="https://www.linkedin.com/in/-aro-barath-chandru--12725622a/?originalSubdomain=in"
+              target="_blank"
+            >
               <Button
                 size="sm"
                 variant="outline"
