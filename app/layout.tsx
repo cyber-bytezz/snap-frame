@@ -44,7 +44,8 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <head>
         <meta name="color-scheme" content="dark" />
-        <PlausibleProvider domain="sanp-frame.vercel.app" />
+        {/* uses plausible analytics where owner can track number of users and views have gone  */}
+        <PlausibleProvider domain="sanp-frame.vercel.app" /> 
       </head>
       <body
         className={`dark h-full min-h-full bg-[length:6px] font-mono text-gray-100 antialiased`}
