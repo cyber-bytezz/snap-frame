@@ -5,6 +5,8 @@ import Logo from "@/components/logo";
 import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Sidebar from "@/components/ui/sidebar";
+
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import imagePlaceholder from "@/public/image-placeholder.png";
@@ -81,8 +83,15 @@ export default function Home() {
     // Add more image paths as needed
   ];
 
-  return (
-    <div className="flex h-full flex-col px-5">
+  return (<div className="h-full w-full flex flex-row ">
+   <div className="w-64 h-full md:w-48 lg:w-64">
+        <Sidebar
+          generations={generations} // Pass generations data as props
+          setActiveIndex={setActiveIndex} // Pass the function to handle prompt clicks
+        />
+      </div>
+    <div className="flex-1 flex flex-col px-5 overflow-auto">
+    
       <header className="flex justify-center pt-20 md:justify-end md:pt-3">
         <div className="absolute left-1/2 top-6 -translate-x-1/2">
           <a href="https://www.dub.sh/together-ai" target="_blank">
@@ -114,7 +123,7 @@ export default function Home() {
       </header>
 
       {/* Content Area */}
-      <div className="flex justify-center">
+      <div className="flex-1 flex justify-center">
         <form className="mt-10 w-full max-w-lg">
           <fieldset>
             <div className="relative">
@@ -262,5 +271,9 @@ export default function Home() {
         </div>
       </footer>
     </div>
+    </div>
+   
+
+    
   );
 }
