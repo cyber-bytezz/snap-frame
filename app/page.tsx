@@ -11,6 +11,7 @@ import imagePlaceholder from "@/public/image-placeholder.png";
 import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
+import { useSession,signIn,signOut } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -20,6 +21,7 @@ type ImageResponse = {
 };
 
 export default function Home() {
+  const {data:session,status} = useSession();
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
@@ -83,16 +85,9 @@ export default function Home() {
 
   return (
     <div className="flex h-full flex-col px-5">
-      <header className="flex justify-center pt-20 md:justify-end md:pt-3">
-        <div className="absolute left-1/2 top-6 -translate-x-1/2">
-          <a href="https://www.dub.sh/together-ai" target="_blank">
-            <Logo
-              iconSrc="https://github.com/shadcn.png"
-              brandName="SnapFrame"
-            />
-          </a>
-        </div>
-        <div>
+      <header className="flex flex-col-reverse lg:flex-row lg:gap-12 py-4 gap-4">
+      <div className="md:w-2/3">
+      <div className=" w-full md:max-w-80">
           <label className="text-xs text-gray-200">
             [Optional] Add your{" "}
             <a
@@ -111,6 +106,37 @@ export default function Home() {
             onChange={(e) => setUserAPIKey(e.target.value)}
           />
         </div>
+        </div>
+        <div className="flex items-start justify-between lg:w-full pt-2">
+          <div className="">
+          <a href="https://www.dub.sh/together-ai" target="_blank">
+            <Logo
+              iconSrc="https://github.com/shadcn.png"
+              brandName="SnapFrame"
+            />
+          </a>
+          </div>
+          <div className="">
+            {
+              status === "authenticated" ? (
+                <Button
+                size="lg"
+                variant="outline"
+                className="inline-flex items-center gap-2"
+                onClick={() => signOut()}
+              >Sign out</Button>
+              ) : (
+                <Button
+                size="lg"
+                variant="outline"
+                className="inline-flex items-center gap-2"
+                onClick={() => signIn("google")}
+              >Sign In</Button>
+              )
+            }
+          </div>
+        </div>
+        
       </header>
 
       {/* Content Area */}
