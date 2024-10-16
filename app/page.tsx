@@ -126,7 +126,9 @@ export default function Home() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
+               
               />
+            
               <div
                 className={`${isFetching || isDebouncing ? "flex" : "hidden"
                   } absolute bottom-3 right-3 items-center justify-center`}

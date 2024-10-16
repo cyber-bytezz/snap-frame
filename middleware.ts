@@ -10,6 +10,8 @@ export async function middleware(req: NextRequest) {
 
   // Allow the request to proceed
   return NextResponse.next();
+
+
 }
 
 // Optionally, specify paths to apply the middleware
