@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
   if (userAPIKey) {
     client.apiKey = userAPIKey;
-  }
+  } 
 
   if (ratelimit && !userAPIKey) {
     const identifier = getIPAddress();
