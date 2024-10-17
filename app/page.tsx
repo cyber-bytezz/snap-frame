@@ -11,10 +11,9 @@ import imagePlaceholder from "@/public/image-placeholder.png";
 import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
+import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react"; // Import these from NextAuth
-
 
 type ImageResponse = {
   b64_json: string;
@@ -22,7 +21,7 @@ type ImageResponse = {
 };
 
 export default function Home() {
-  const { data: session, status } = useSession(); // Use session hook
+  const { status, data: session } = useSession();
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
@@ -67,14 +66,16 @@ export default function Home() {
   let activeImage =
     activeIndex !== undefined ? generations[activeIndex].image : undefined;
 
-    const downloadImage = (base64Image :string, index: number | undefined) => {
-      const link = document.createElement("a");
-      link.href = base64Image;
-      link.download = `generated_image_${index}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
+  const downloadImage = (base64Image: string, index: number | undefined) => {
+    const link = document.createElement("a");
+    link.href = base64Image;
+    link.download = `generated_image_${index}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Array of image paths from the public folder
   const imagesFromPublic = [
     "/1.png",
     "/2.png",
@@ -86,19 +87,15 @@ export default function Home() {
     "/8.png",
   ];
 
-  return (<div className="h-full w-full flex flex-row ">
-  
-    <div className="flex-1 flex flex-col px-5 overflow-auto">
-    
-      <header className="flex justify-center pt-20 md:justify-end md:pt-3">
-        <div className="absolute left-1/2 top-6 -translate-x-1/2">
+  return (
+    <div className="h-full w-full flex flex-col px-5 overflow-auto">
+      <header className="flex justify-between pt-4">
+        <div className="flex justify-center">
           <a href="https://www.dub.sh/together-ai" target="_blank">
             <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
           </a>
         </div>
-        
-        {/* Display sign-in and sign-out buttons conditionally based on session status */}
-        <div>
+        <div className="flex items-center gap-4">
           {status === "loading" ? (
             <p>Loading...</p>
           ) : session ? (
@@ -110,47 +107,30 @@ export default function Home() {
             <Button onClick={() => signIn("google")}>Sign In with Google</Button>
           )}
         </div>
-
-        <div>
-          <label className="text-xs text-gray-200">
-            [Optional] Add your{" "}
-            <a
-              href="https://api.together.xyz/settings/api-keys"
-              target="_blank"
-              className="underline underline-offset-4 transition hover:text-blue-500"
-            >
-              Together API Key
-            </a>
-          </label>
-          <Input
-            placeholder="API Key"
-            type="password"
-            value={userAPIKey}
-            className="mt-1 bg-gray-400 text-gray-200 placeholder:text-gray-300"
-            onChange={(e) => setUserAPIKey(e.target.value)}
-          />
-        </div>
       </header>
 
-      {/* Content Area */}
-      <div className="flex-1 flex justify-center">
-        <form className="mt-10 w-full max-w-lg">
+      <div className="flex justify-center mt-10">
+        <form className="w-full max-w-lg">
           <fieldset>
             <div className="relative">
               <Textarea
                 rows={4}
                 spellCheck={false}
-                placeholder="Describe your image..."
+                placeholder={
+                  status === "authenticated"
+                    ? `Describe your image...`
+                    : `Sign in to generate images...`
+                }
                 required
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="w-full resize-none border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
-               
+                disabled={status !== "authenticated"}
               />
-            
               <div
-                className={`${isFetching || isDebouncing ? "flex" : "hidden"
-                  } absolute bottom-3 right-3 items-center justify-center`}
+                className={`${
+                  isFetching || isDebouncing ? "flex" : "hidden"
+                } absolute bottom-3 right-3 items-center justify-center`}
               >
                 <Spinner className="size-4" />
               </div>
@@ -172,25 +152,27 @@ export default function Home() {
         </form>
       </div>
 
-      {/* Active Image or Prompt Section */}
       <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
-        {/* Conditional Rendering of Active Image */}
         {!activeImage || !prompt ? (
           <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
-            <p className="text-xl fo nt-semibold text-gray-200 md:text-3xl lg:text-4xl">
+            <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
               Generate Stunning Images Instantly!
             </p>
             <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
               Enter a prompt and generate images in milliseconds as you type.
+              Powered by Flux on Together AI.
             </p>
           </div>
         ) : (
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
-            {/* Active Image Display */}
-            <div>
-            <button onClick={() =>
-              downloadImage(
-                `data:image/png;base64,${activeImage.b64_json}`, activeIndex)}>
+            <button
+              onClick={() =>
+                downloadImage(
+                  `data:image/png;base64,${activeImage.b64_json}`,
+                  activeIndex
+                )
+              }
+            >
               <Image
                 placeholder="blur"
                 blurDataURL={imagePlaceholder.blurDataURL}
@@ -198,21 +180,19 @@ export default function Home() {
                 height={768}
                 src={`data:image/png;base64,${activeImage.b64_json}`}
                 alt=""
-                className={`${isFetching ? "animate-pulse" : ""
-                  } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
+                className={`${
+                  isFetching ? "animate-pulse" : ""
+                } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
             </button>
-            </div>
-            
+
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
-              
               {generations.map((generatedImage, i) => (
                 <button
                   key={i}
                   className="w-32 shrink-0 opacity-50 hover:opacity-100"
                   onClick={() => setActiveIndex(i)}
                 >
-                  
                   <Image
                     placeholder="blur"
                     blurDataURL={imagePlaceholder.blurDataURL}
@@ -223,14 +203,12 @@ export default function Home() {
                     className="max-w-full rounded-lg object-cover shadow-sm shadow-black"
                   />
                 </button>
-
-              ))} 
+              ))}
             </div>
           </div>
         )}
       </div>
 
-      {/* Automatically Scroll Horizontal Gallery Below */}
       <div className="overflow-hidden">
         <div className="flex gap-4 animate-scroll whitespace-nowrap">
           {imagesFromPublic.map((imageSrc, index) => (
@@ -238,8 +216,8 @@ export default function Home() {
               <Image
                 src={imageSrc}
                 alt={`Gallery Image ${index + 1}`}
-                width={400}  // Set width for the images
-                height={300} // Set height for the images
+                width={400}
+                height={300}
                 className="max-w-full rounded-lg object-cover shadow-sm shadow-black"
               />
             </div>
@@ -247,7 +225,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer Section */}
       <footer className="mt-16 w-full items-center pb-10 text-center text-gray-300 md:mt-4 md:flex md:justify-between md:pb-5 md:text-xs lg:text-sm">
         <p>
           Powered by{" "}
@@ -261,8 +238,6 @@ export default function Home() {
         </p>
 
         <div className="mt-8 flex items-center justify-center md:mt-0 md:justify-between md:gap-6">
-
-
           <div className="flex gap-6 md:gap-2">
             <a href="https://github.com/cyber-bytezz" target="_blank">
               <Button
@@ -274,7 +249,10 @@ export default function Home() {
                 GitHub
               </Button>
             </a>
-            <a href="https://www.linkedin.com/in/-aro-barath-chandru--12725622a/?originalSubdomain=in" target="_blank">
+            <a
+              href="https://www.linkedin.com/in/-aro-barath-chandru--12725622a/?originalSubdomain=in"
+              target="_blank"
+            >
               <Button
                 size="sm"
                 variant="outline"
@@ -288,9 +266,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-    </div>
-   
-
-    
   );
 }
