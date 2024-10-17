@@ -58,7 +58,8 @@ const handler = NextAuth({
                 return false; // Deny sign-in in case of error
             }
         }
-    }
-});
+    },
+    secret : process.env.NEXTAUTH_SECRET
+})
 
 export { handler as GET, handler as POST };
