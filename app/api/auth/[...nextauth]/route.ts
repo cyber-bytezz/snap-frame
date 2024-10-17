@@ -15,6 +15,7 @@ interface customSession extends Session {
     };
 }
 
+
 const handler = NextAuth({
     providers: [
         GoogleProvider({
