@@ -115,14 +115,20 @@ export default function Home() {
           </div>
           <div className="">
             {status === "authenticated" ? (
-              <Button
-                size="lg"
-                variant="outline"
-                className="inline-flex items-center gap-2"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </Button>
+              <>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="inline-flex items-center gap-2"
+                  onClick={() => signOut()}
+                >
+                  Sign out
+                </Button>
+                {/* Display welcome message */}
+                <p className="mt-2 text-sm text-gray-300">
+                  Welcome, {session?.user?.name || session?.user?.email}!
+                </p>
+              </>
             ) : (
               <Button
                 size="lg"
@@ -183,7 +189,6 @@ export default function Home() {
 
       {/* Active Image or Prompt Section */}
       <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
-        {/* Conditional Rendering of Active Image */}
         {!activeImage || !prompt ? (
           <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
             <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
@@ -196,7 +201,6 @@ export default function Home() {
           </div>
         ) : (
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
-            {/* Active Image Display */}
             <div>
               <Image
                 placeholder="blur"
@@ -211,7 +215,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Generations Gallery */}
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
               {generations.map((generatedImage, i) => (
                 <button
@@ -235,7 +238,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* Automatically Scroll Horizontal Gallery Below */}
       <div className="overflow-hidden">
         <div className="flex gap-4 animate-scroll whitespace-nowrap">
           {imagesFromPublic.map((imageSrc, index) => (
@@ -252,7 +254,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer Section */}
       <footer className="mt-16 w-full items-center pb-10 text-center text-gray-300 md:mt-4 md:flex md:justify-between md:pb-5 md:text-xs lg:text-sm">
         <p>
           Powered by{" "}
