@@ -6,7 +6,7 @@
 - Helicone for observability
 - Plausible for website analytics
 
-## Cloning & running
+## Cloning & running 
 
 1. Clone the repo: `git clone https://github.com/`
 2. Create a `.env.local` file and add your [Together AI API key](https://www.dub.sh/together-ai): `TOGETHER_API_KEY=`
