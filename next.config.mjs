@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "api.together.ai",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com", // Add Google domain for profile images
+      },
     ],
   },
 };

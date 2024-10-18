@@ -25,6 +25,8 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false); 
+  const [showSignOut, setShowSignOut] = useState(false); 
   const debouncedPrompt = useDebounce(prompt, 300);
   const [generations, setGenerations] = useState<{
     prompt: string;
@@ -56,6 +58,9 @@ export default function Home() {
 
   let isDebouncing = prompt !== debouncedPrompt;
 
+  // Fix for activeImage reference
+  let activeImage = activeIndex !== undefined ? generations[activeIndex]?.image : undefined;
+
   useEffect(() => {
     if (image && !generations.map((g) => g.image).includes(image)) {
       setGenerations((images) => [...images, { prompt, image }]);
@@ -63,10 +68,6 @@ export default function Home() {
     }
   }, [generations, image, prompt]);
 
-  let activeImage =
-    activeIndex !== undefined ? generations[activeIndex].image : undefined;
-
-  // Array of image paths from the public folder
   const imagesFromPublic = [
     "/1.png",
     "/2.png",
@@ -76,12 +77,12 @@ export default function Home() {
     "/6.png",
     "/7.png",
     "/8.png",
-    "/1.png",
-    "/2.png",
-    "/3.png",
-    "/4.png",
     // Add more image paths as needed
   ];
+  // Handler to toggle the sign-out option
+  const handleToggleSignOut = () => {
+    setShowSignOut((prev) => !prev);
+  };
 
   return (
     <div className="flex h-full flex-col px-5">
@@ -113,21 +114,39 @@ export default function Home() {
               <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
             </a>
           </div>
-          <div className="">
+          <div className="relative">
             {status === "authenticated" ? (
               <>
+                {/* Toggle button for sign-out */}
                 <Button
                   size="lg"
                   variant="outline"
                   className="inline-flex items-center gap-2"
-                  onClick={() => signOut()}
+                  onClick={handleToggleSignOut}
                 >
-                  Sign out
+                  Menu
                 </Button>
-                {/* Display welcome message */}
-                <p className="mt-2 text-sm text-gray-300">
-                  Welcome, {session?.user?.name || session?.user?.email}!
-                </p>
+
+                {/* Conditionally render sign-out button based on toggle */}
+                {showSignOut && (
+                  <div className="absolute top-14 right-0 bg-gray-800 rounded-md p-4 shadow-lg">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="inline-flex items-center gap-2"
+                      onClick={() => signOut()}
+                    >
+                      Sign out
+                    </Button>
+                  </div>
+                )}
+
+                {/* Show welcome message for 2 seconds after sign-in */}
+                {showWelcomeMessage && (
+                  <p className="mt-2 text-sm text-gray-300">
+                    Welcome, {session?.user?.name || session?.user?.email}!
+                  </p>
+                )}
               </>
             ) : (
               <Button
@@ -200,6 +219,18 @@ export default function Home() {
             </p>
           </div>
         ) : (
+          <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
+        {!activeImage || !prompt ? (
+          <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
+            <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
+              Generate images in real-time
+            </p>
+            <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
+              Enter a prompt and generate images in milliseconds as you type.
+              Powered by Flux on Together AI.
+            </p>
+          </div>
+        ) : (
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
             <div>
               <Image
@@ -235,6 +266,8 @@ export default function Home() {
               ))}
             </div>
           </div>
+        )}
+      </div>
         )}
       </div>
 

@@ -1,13 +1,15 @@
-import NextAuth, { Profile, Session } from "next-auth";
+import NextAuth, { Profile, Session, User as NextAuthUser } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { connectToDatabase } from "@/lib/database";
 import User from "@/models/user";
 
+// Extending Profile to include custom properties
 interface CustomProfile extends Profile {
     picture: string;
 }
 
-interface customSession extends Session {
+// Extending Session to include user ID
+interface CustomSession extends Session {
     user: {
         email: string;
         name: string;
@@ -15,36 +17,49 @@ interface customSession extends Session {
     };
 }
 
-
 const handler = NextAuth({
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_ID!,
             clientSecret: process.env.GOOGLE_SECRET!,
-        })
+        }),
     ],
     callbacks: {
         async session({ session }: { session: Session }) {
-            const customSession = session as customSession;
-            await connectToDatabase();
+            // Cast session to CustomSession type
+            const customSession = session as CustomSession;
 
-            // Find the user by email in MongoDB
-            const sessionUser = await User.findOne({ email: customSession.user.email });
-
-            // Add MongoDB user ID to the session object
-            customSession.user.id = sessionUser._id.toString();
-
-            return customSession;
-        },
-        async signIn({ profile }) {
-            const customProfile = profile as CustomProfile;
             try {
+                // Connect to the database
                 await connectToDatabase();
 
-                // Check if user already exists in MongoDB
-                const userExists = await User.findOne({ email: profile?.email });
+                // Find the user by email in MongoDB
+                const sessionUser = await User.findOne({ email: customSession.user.email });
 
-                // If user doesn't exist, create a new user
+                if (sessionUser) {
+                    // Add MongoDB user ID to the session object
+                    customSession.user.id = sessionUser._id.toString();
+                }
+
+                return customSession; // Return the modified session object
+            } catch (error) {
+                console.error("Error in session callback:", error);
+                // Return the original session even if there's an error
+                return session;
+            }
+        },
+
+        async signIn({ profile }) {
+            const customProfile = profile as CustomProfile;
+
+            try {
+                // Connect to the database
+                await connectToDatabase();
+
+                // Check if the user already exists in MongoDB
+                const userExists = await User.findOne({ email: customProfile?.email });
+
+                // If the user doesn't exist, create a new user
                 if (!userExists) {
                     await User.create({
                         email: customProfile?.email,
@@ -61,6 +76,7 @@ const handler = NextAuth({
         }
     },
     secret : process.env.NEXTAUTH_SECRET
+
 });
 
 export { handler as GET, handler as POST };
