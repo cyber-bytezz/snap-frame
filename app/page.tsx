@@ -21,7 +21,7 @@ type ImageResponse = {
 };
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const {  status } = useSession();
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
