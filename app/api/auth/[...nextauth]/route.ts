@@ -1,4 +1,4 @@
-import NextAuth, { Profile, Session, User as NextAuthUser } from "next-auth";
+import NextAuth, { Profile, Session } from "next-auth"; // Removed NextAuthUser
 import GoogleProvider from "next-auth/providers/google";
 import { connectToDatabase } from "@/lib/database";
 import User from "@/models/user";
@@ -75,8 +75,7 @@ const handler = NextAuth({
             }
         }
     },
-    secret : process.env.NEXTAUTH_SECRET
-
+    secret: process.env.NEXTAUTH_SECRET
 });
 
 export { handler as GET, handler as POST };

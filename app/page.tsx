@@ -25,7 +25,6 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false); 
   const [showSignOut, setShowSignOut] = useState(false); 
   const debouncedPrompt = useDebounce(prompt, 300);
   const [generations, setGenerations] = useState<{
@@ -79,6 +78,7 @@ export default function Home() {
     "/8.png",
     // Add more image paths as needed
   ];
+
   // Handler to toggle the sign-out option
   const handleToggleSignOut = () => {
     setShowSignOut((prev) => !prev);
@@ -139,13 +139,6 @@ export default function Home() {
                       Sign out
                     </Button>
                   </div>
-                )}
-
-                {/* Show welcome message for 2 seconds after sign-in */}
-                {showWelcomeMessage && (
-                  <p className="mt-2 text-sm text-gray-300">
-                    Welcome, {session?.user?.name || session?.user?.email}!
-                  </p>
                 )}
               </>
             ) : (
