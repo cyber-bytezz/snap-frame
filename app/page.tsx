@@ -21,10 +21,11 @@ type ImageResponse = {
 };
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
+  const [showSignOut, setShowSignOut] = useState(false);
   const debouncedPrompt = useDebounce(prompt, 300);
   const [generations, setGenerations] = useState<{
     prompt: string;
@@ -56,6 +57,9 @@ export default function Home() {
 
   let isDebouncing = prompt !== debouncedPrompt;
 
+  // Fix for activeImage reference
+  let activeImage = activeIndex !== undefined ? generations[activeIndex]?.image : undefined;
+
   useEffect(() => {
     if (image && !generations.map((g) => g.image).includes(image)) {
       setGenerations((images) => [...images, { prompt, image }]);
@@ -63,19 +67,15 @@ export default function Home() {
     }
   }, [generations, image, prompt]);
 
-  let activeImage =
-    activeIndex !== undefined ? generations[activeIndex].image : undefined;
-  
-  
-    const downloadImage = (base64Image: string, index: number | undefined) => {
-      const link = document.createElement("a");
-      link.href = base64Image;
-      link.download = `generated_image_${index}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
-  
+  const downloadImage = (base64Image: string, index: number | undefined) => {
+    const link = document.createElement("a");
+    link.href = base64Image;
+    link.download = `generated_image_${index}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Array of image paths from the public folder
   const imagesFromPublic = [
     "/1.png",
@@ -86,12 +86,13 @@ export default function Home() {
     "/6.png",
     "/7.png",
     "/8.png",
-    "/1.png",
-    "/2.png",
-    "/3.png",
-    "/4.png",
     // Add more image paths as needed
   ];
+
+  // Handler to toggle the sign-out option
+  const handleToggleSignOut = () => {
+    setShowSignOut((prev) => !prev);
+  };
 
   return (
     <div className="flex h-full flex-col px-5">
@@ -123,21 +124,32 @@ export default function Home() {
               <Logo iconSrc="https://github.com/shadcn.png" brandName="SnapFrame" />
             </a>
           </div>
-          <div className="">
+          <div className="relative">
             {status === "authenticated" ? (
               <>
+                {/* Toggle button for sign-out */}
                 <Button
                   size="lg"
                   variant="outline"
                   className="inline-flex items-center gap-2"
-                  onClick={() => signOut()}
+                  onClick={handleToggleSignOut}
                 >
-                  Sign out
+                  Menu
                 </Button>
-                {/* Display welcome message */}
-                <p className="mt-2 text-sm text-gray-300">
-                  Welcome, {session?.user?.name || session?.user?.email}!
-                </p>
+
+                {/* Conditionally render sign-out button based on toggle */}
+                {showSignOut && (
+                  <div className="absolute top-14 right-0 bg-gray-800 rounded-md p-4 shadow-lg">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="inline-flex items-center gap-2"
+                      onClick={() => signOut()}
+                    >
+                      Sign out
+                    </Button>
+                  </div>
+                )}
               </>
             ) : (
               <Button
@@ -223,17 +235,29 @@ export default function Home() {
                   isFetching ? "animate-pulse" : ""
                 } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
-        
-            <Button   onClick={() =>
-                downloadImage(
-                  `data:image/png;base64,${activeImage.b64_json}`,
-                  activeIndex
-                )
-              } className="bg-gray-400 text-white p-3 size-12" title="Download">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-          </svg></Button>
+
+              <Button
+                onClick={() =>
+                  downloadImage(
+                    `data:image/png;base64,${activeImage.b64_json}`,
+                    activeIndex
+                  )
+                }
+                className="bg-gray-400 text-white p-3 size-12"
+                title="Download"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-download"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                </svg>
+              </Button>
             </div>
 
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
