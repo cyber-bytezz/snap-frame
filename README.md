@@ -1,6 +1,6 @@
 ## Tech stack
 
-- [Flux Schnell](https://www.dub.sh/together-flux/) from BFL for the image model
+- [Flux Schnell](https://www.dub.sh/together-flux/) from BFL for the image model 
 - [Together AI](https://www.dub.sh/together-ai) for inference
 - Next.js app router with Tailwind
 - Helicone for observability
