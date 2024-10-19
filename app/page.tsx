@@ -208,7 +208,7 @@ export default function Home() {
             </p>
             <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
               Enter a prompt and generate images in milliseconds as you type.
-              Powered by Flux on Together AI.
+              
             </p>
           </div>
         ) : (
