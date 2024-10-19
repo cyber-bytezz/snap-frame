@@ -21,11 +21,11 @@ type ImageResponse = {
 };
 
 export default function Home() {
-  const { status } = useSession();
+  const {  status } = useSession();
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
-  const [showSignOut, setShowSignOut] = useState(false);
+  const [showSignOut, setShowSignOut] = useState(false); 
   const debouncedPrompt = useDebounce(prompt, 300);
   const [generations, setGenerations] = useState<{
     prompt: string;
@@ -67,16 +67,6 @@ export default function Home() {
     }
   }, [generations, image, prompt]);
 
-  const downloadImage = (base64Image: string, index: number | undefined) => {
-    const link = document.createElement("a");
-    link.href = base64Image;
-    link.download = `generated_image_${index}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Array of image paths from the public folder
   const imagesFromPublic = [
     "/1.png",
     "/2.png",
@@ -222,8 +212,20 @@ export default function Home() {
             </p>
           </div>
         ) : (
+          <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
+        {!activeImage || !prompt ? (
+          <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
+            <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
+              Generate images in real-time
+            </p>
+            <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
+              Enter a prompt and generate images in milliseconds as you type.
+              Powered by Flux on Together AI.
+            </p>
+          </div>
+        ) : (
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
-            <div className="flex flex-row">
+            <div>
               <Image
                 placeholder="blur"
                 blurDataURL={imagePlaceholder.blurDataURL}
@@ -235,29 +237,6 @@ export default function Home() {
                   isFetching ? "animate-pulse" : ""
                 } max-w-full rounded-lg object-cover shadow-sm shadow-black`}
               />
-
-              <Button
-                onClick={() =>
-                  downloadImage(
-                    `data:image/png;base64,${activeImage.b64_json}`,
-                    activeIndex
-                  )
-                }
-                className="bg-gray-400 text-white p-3 size-12"
-                title="Download"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-download"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
-                </svg>
-              </Button>
             </div>
 
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
@@ -280,6 +259,8 @@ export default function Home() {
               ))}
             </div>
           </div>
+        )}
+      </div>
         )}
       </div>
 
